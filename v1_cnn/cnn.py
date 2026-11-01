@@ -12,6 +12,8 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from train_validation_split.train_validation_split import create_train_validation_split
+from v1_cnn.baselines.baselines import run_baseline_models
+from v1_cnn.evaluation_metrics.cm import evaluate_cnn_performance
 
 
 TIME_STEPS = 250
@@ -112,3 +114,7 @@ if __name__ == '__main__':
 
     model = build_1d_cnn(X_train.shape[1:], len(encoder.classes_))
     model.fit(X_train, y_train, validation_data=(X_val, y_val), epochs=20, batch_size=32)
+
+    # Compare the CNN with simple feature-based baselines and report CNN metrics.
+    run_baseline_models(X_train, X_val, y_train, y_val)
+    evaluate_cnn_performance(model, X_val, np.argmax(y_val, axis=1), encoder)
